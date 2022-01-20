@@ -2,7 +2,6 @@ import { FormEvent, useState, useContext } from 'react';
 import Modal from 'react-modal';
 import incomeImg from '../../assets/income.svg';
 import outcomeImg from '../../assets/outcome.svg';
-import { api } from '../../services/api';
 import { Container, TransactionTypeContainer, RadioBox } from './styles';
 import closeImg from '../../assets/close.svg';
 import { TransactionsContext } from '../../TransactionsContext';
@@ -25,16 +24,25 @@ export function NewTransactionModal( {isOpen, onRequestClose }: newTransactionMo
     /*Criação do estado para saber em qual botão a pessoa clicou*/
     const [type, setType] = useState('deposit');
 
-    function handleCreateNewTransaction(event: FormEvent){
+    async function handleCreateNewTransaction(event: FormEvent){
         /*para prevenir a tratativa padrão dos formularios no submit*/
         event.preventDefault();
 
-        createTransaction({
+        await createTransaction({
             title,
             amount,
             category,
             type, 
         })
+
+        /*Setar/Limpar os dados do */
+        setTitle('');
+        setAmount(0);
+        setCategory('');
+        setType('deposit');
+
+        /* com async o react consegue saber se terminou a transação */     
+        onRequestClose();
 
 
     }

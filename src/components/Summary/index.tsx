@@ -10,7 +10,32 @@ import { Container } from "./styles";
 export function Summary() {
 
     const {transactions} = useContext(TransactionsContext);
-    console.log(transactions);
+    
+    /*Lista tudo e acc "acumula" soma o valor*/
+    // const totalDeposits = transactions.reduce((acc, transaction) => {
+    //     if (transaction.type === 'deposit' ) {
+    //         return acc + transaction.amount;
+    //     }
+    //     return acc;
+    // },0);
+
+    /*Vamos fazer os totais todos com apenas uma função ao inves de repetir acima varias vezes*/
+
+    const summary = transactions.reduce((acc, transaction) => {
+        if (transaction.type === 'deposit' ) {
+            acc.deposits += transaction.amount;
+            acc.total += transaction.amount;
+        }
+        else{
+            acc.witdraws += transaction.amount;
+            acc.total -= transaction.amount;
+        }
+        return acc;
+    },{
+        deposits:0,
+        witdraws:0,
+        total:0,
+    })
 
     return(
         <Container>
@@ -19,7 +44,13 @@ export function Summary() {
                     <p>Entradas</p>
                     <img src={incomeImg} alt="Entradas" />
                 </header>
-                <strong>R$ 1.000,00</strong>
+                <strong> 
+                    {new Intl.NumberFormat('pt-BR',{
+                        style: 'currency',
+                        currency: 'BRL'
+                        }).format(summary.deposits)
+                    }                    
+                </strong>
             </div>
 
             <div>
@@ -27,7 +58,13 @@ export function Summary() {
                     <p>Saidas</p>
                     <img src={outcomeImg} alt="Saidas" />                    
                 </header>
-                <strong>R$ -500,00</strong>
+                <strong>-
+                    {new Intl.NumberFormat('pt-BR',{
+                        style: 'currency',
+                        currency: 'BRL'
+                        }).format(summary.witdraws)
+                    }                                         
+                </strong>
             </div>
 
             <div className="highlight-background">
@@ -35,7 +72,13 @@ export function Summary() {
                     <p>Total</p>
                     <img src={totalImg} alt="Total" />                    
                 </header>
-                <strong>R$ 500,00</strong>
+                <strong>
+                    {new Intl.NumberFormat('pt-BR',{
+                        style: 'currency',
+                        currency: 'BRL'
+                        }).format(summary.total)
+                    }
+                </strong>
             </div>
 
 
